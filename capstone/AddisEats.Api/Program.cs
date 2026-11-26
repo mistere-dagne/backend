@@ -14,7 +14,7 @@ builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 //adding CORS config (cross origin resource sharing) - used in frontend integration?
 builder.Services.AddCors(options => 
     options.AddPolicy("fronend", policy =>
-        policy.withOrigins("http://loalhost:3000")  //we can also say (*) -to say accept anything not a specific port
+        policy.WithOrigins("http://loalhost:3000")  //we can also say (*) -to say accept anything not a specific port
             .AllowAnyHeader()
             .AllowAnyMethod())
             //we can alo add using ,  for accepting multiple ports

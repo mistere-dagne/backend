@@ -1,6 +1,37 @@
-@AddisEats.Api_HostAddress = http://localhost:5066
+@host = http://localhost:5066
 
-GET {{AddisEats.Api_HostAddress}}/weatherforecast/
+### 1. Get all restaurants
+GET {{host}}/api/v1/restaurants
 Accept: application/json
 
-###
+### 2. Filter restaurants by area
+GET {{host}}/api/v1/restaurants?area=Bole
+Accept: application/json
+
+### 3. Filter and paginate restaurants
+GET {{host}}/api/v1/restaurants?area=Bole&page=1&limit=5
+Accept: application/json
+
+### 4. Get restaurants - page 2
+GET {{host}}/api/v1/restaurants?page=2&limit=5
+Accept: application/json
+
+### 5. Get restaurant by ID
+GET {{host}}/api/v1/restaurants/1
+Accept: application/json
+
+### 6. Restaurant not found
+GET {{host}}/api/v1/restaurants/9999
+Accept: application/json
+
+### 7. Get restaurant menu
+GET {{host}}/api/v1/restaurants/1/menu
+Accept: application/json
+
+### 8. Filter menu by category
+GET {{host}}/api/v1/restaurants/1/menu?category=Main%20Course
+Accept: application/json
+
+### 9. Menu for nonexistent restaurant
+GET {{host}}/api/v1/restaurants/9999/menu
+Accept: application/json

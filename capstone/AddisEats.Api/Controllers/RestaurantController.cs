@@ -29,11 +29,11 @@ public class RestaurantController : ControllerBase  //implementation
             return NotFound(); //400
         }
         
-        return Ok(restaurant); //ok wz response body ie restaurant
+        return Ok(restaurant.ToDTO()); //ok wz response body 
     }
 
     [HttpGet()]
-    public IActionResult GetAllRestaurants([FromQuery] string? address, [FromQuery] int page=1, [FromQuery] int pageSize=3) //queries //default values(incase not sent from frontend)
+    public IActionResult GetAllRestaurants([FromQuery] string? address, [FromQuery] int page=1, [FromQuery] int pageSize=20) //queries //default values(incase not sent from frontend)
     {
         var restaurants = _restaurantService.GetAll(address, page, pageSize);
         

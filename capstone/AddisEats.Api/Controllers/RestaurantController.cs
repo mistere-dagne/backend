@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc; //always when creating a controller
-using AddisEats.Api.Data;
-using AddisEats.Api.DTOs;
-using AddisEats.Api.Models;
 using AddisEats.Api.Mappers;
+using AddisEats.Api.Services.RestaurantServices;
 
 namespace AddisEats.Api.Controllers;
 
@@ -11,33 +9,36 @@ namespace AddisEats.Api.Controllers;
 
 public class RestaurantController : ControllerBase  //implementation
 {
-    private readonly List<Restaurant> allRestaurants = SeedData.restaurants;
+    private readonly IRestaurantService _restaurantService; //service injection?
 
-    //our end points :
+    public RestaurantController(IRestaurantService restaurantService)
+    {
+        _restaurantService = restaurantService;
+    } //service dependency injection using a constructor? 
+    
+    //now our end points :
     [HttpGet("{id}")]
     public IActionResult GetRestaurantById (int id)  //returns anything
     {
-        var restaurant= allRestaurants.Where(r=>r.Id==id).FirstOrDefault();
+        var restaurant= _restaurantService.GetById(id); //calls and put on z var
+        
         if (restaurant==null)
         {
             return NotFound(); //400
         }
-        return Ok(restaurant.ToDTO()); //ok wz response body ie restaurant
+        
+        return Ok(restaurant); //ok wz response body ie restaurant
     }
 
     [HttpGet()]
     public IActionResult GetAllRestaurants([FromQuery] string? address, [FromQuery] int page=1, [FromQuery] int pageSize=3) //queries //default values(incase not sent from frontend)
     {
-         var restaurants = allRestaurants
-            .Where(r=>address==null || r.Address == address)
-            .OrderBy(r=>r.Name)
-            .Skip((page-1)*pageSize)   //pagenation?
-            .Take(pageSize)
-            .ToList();
+        var restaurants = _restaurantService.GetAll(address, page, pageSize);
         
-        var restaurantDTOs = restaurants.Select(r=>r.ToDTO()).ToList();  //Select built in*
-        
+        var restaurantDTOs = restaurants.Select(r=>r.ToDTO()).ToList();  
+
         return Ok(restaurantDTOs); 
     }
+    //* when implementation called , the service goes
 }
 

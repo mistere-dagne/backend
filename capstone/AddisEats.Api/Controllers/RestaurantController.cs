@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc; //always when creating a controller
 using AddisEats.Api.Mappers;
 using AddisEats.Api.Services.RestaurantServices;
+using AddisEats.Api.Services.MenuItemServices;
 
 namespace AddisEats.Api.Controllers;
 
@@ -10,11 +11,12 @@ namespace AddisEats.Api.Controllers;
 public class RestaurantController : ControllerBase  //implementation
 {
     private readonly IRestaurantService _restaurantService; //service injection?
-
-    public RestaurantController(IRestaurantService restaurantService)
+    private readonly IMenuItemService _menuItemService;
+    public RestaurantController(IRestaurantService restaurantService, IMenuItemService menuItemService)  
     {
         _restaurantService = restaurantService;
-    } //service dependency injection using a constructor? 
+        _menuItemService = menuItemService; //multiple service 
+    } //service dependency injection using a constructor
     
     //now our end points :
     [HttpGet("{id}")]
@@ -40,5 +42,22 @@ public class RestaurantController : ControllerBase  //implementation
         return Ok(restaurantDTOs); 
     }
     //* when implementation called , the service goes
+
+    //lets add one more endpoint
+    [HttpGet("{id}/menu")]
+    public IActionResult GetMenu(int id, [FromQuery] string? category)
+    {
+        if (_restaurantService.GetById(id) is null)
+        {
+            return NotFound();
+        }
+
+        var items = _menuItemService.ForRestaurant(id, category)
+            .Select(m => m.ToDTO())
+            .ToList();
+
+        return Ok(items);
+    }
 }
+
 
